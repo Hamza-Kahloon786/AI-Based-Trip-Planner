@@ -1,5 +1,6 @@
 import OpenAI from "openai";
-import { AiPromet } from "../prompts/wedding-planner-ai-promet.js"
+import { AiPromet } from "../prompts/wedding-planner-ai-promet.js";
+
 import client from "../queues/client.js"
 import WeddingResult from "../models/WeddingResult.js"
 

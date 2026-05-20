@@ -1,140 +1,158 @@
-import React, { useState } from "react";
-import { LOGO_TEXT, NAV_LINKS } from "../constant/Constant.js";
-import { useNavigate } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { NAV_LINKS } from "../constant/Constant.js";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, userData } from "../redux/slice/authSlice.js";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("Home");
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const user = useSelector(userData);
+  const isLoggedIn = !!(user?.accessToken || localStorage.getItem("userId"));
 
-  const moveActiveSection = (link) => {
-    setActiveLink(link.name);
-    navigate(link.href);
-   
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+    localStorage.removeItem("aiStreamJobId");
+    navigate("/login");
   };
 
-  return (
-    <nav className="w-full sticky top-0 z-50 bg-gradient-to-r from-blue-600 via-green-600 to-orange-600 backdrop-blur-md border-b border-white/20 shadow-lg">
-      <div className=" px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <a onClick={()=>navigate("/")} className="flex cursor-pointer items-center gap-3">
-              <div className="relative">
-                <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white/20 border border-white/30 text-white font-bold text-xl shadow-md">
-                  H 
-                </div>
-              </div>
-              <div>
-                <span className="text-white font-extrabold text-2xl tracking-tight">
-                  {LOGO_TEXT}
-                </span>
-              </div>
-            </a>
-          </div>
+  const handleNav = (link) => {
+    setOpen(false);
+    navigate(link.href);
+  };
 
-          <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
+  const isActive = (href) => location.pathname === href;
+
+  return (
+    <nav className={`w-full sticky top-0 z-50 bg-white transition-shadow duration-200 ${scrolled ? "shadow-md" : "border-b border-slate-100"}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+
+          {/* Logo */}
+          <button onClick={() => navigate("/")} className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm group-hover:bg-indigo-700 transition-colors">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </div>
+            <div>
+              <span className="font-extrabold text-lg text-slate-900 tracking-tight">Trip</span>
+              <span className="font-extrabold text-lg text-indigo-600 tracking-tight">AI</span>
+            </div>
+          </button>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-0.5">
             {NAV_LINKS.map((link) => (
-              <a
+              <button
                 key={link.name}
-                onClick={() => moveActiveSection(link)}
-                className={`px-6 py-2.5 mx-1 cursor-pointer font-medium transition-colors duration-200 ${
-                  activeLink === link.name
-                    ? "text-white  border border-t-0 border-l-0 border-r-0 border-white/30"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
+                onClick={() => handleNav(link)}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive(link.href)
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 {link.name}
-              </a>
+              </button>
             ))}
           </div>
 
-          <div className="flex items-center">
-            <button  onClick={()=>navigate("/login")} className="hidden cursor-pointer md:flex items-center gap-2 px-6 py-2.5  border text-white font-medium border-white/30 border-t-0 border-l-0 border-r-0   transition-colors duration-200">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          {/* Desktop Auth */}
+          <div className="hidden md:flex items-center gap-2">
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                />
-              </svg>
-              <span>Login</span>
-            </button>
-
-            <button
-              aria-label="Toggle menu"
-              onClick={() => setOpen((v) => !v)}
-              className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-xl text-white bg-white/10 border border-white/20 hover:bg-white/20 transition-colors"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                {open ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Sign out
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors"
+                >
+                  Sign in
+                </button>
+                <button
+                  onClick={() => navigate("/register")}
+                  className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-sm"
+                >
+                  Get started
+                </button>
+              </>
+            )}
           </div>
+
+          {/* Mobile Toggle */}
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-700 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {open
+                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              }
+            </svg>
+          </button>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden bg-gradient-to-b from-blue-600 via-green-600 to-orange-600 border-t border-white/20">
-          <div className="px-4 py-4 space-y-2">
+        <div className="md:hidden border-t border-slate-100 bg-white">
+          <div className="px-4 py-3 space-y-1">
             {NAV_LINKS.map((link) => (
-              <a
+              <button
                 key={link.name}
-                href={link.href}
-                onClick={() => {
-                  setActiveLink(link.name);
-                  setOpen(false);
-                }}
-                className={`block w-full px-4 py-3 rounded-xl text-center font-medium ${
-                  activeLink === link.name
-                    ? "text-white bg-white/20 border border-white/30"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
+                onClick={() => handleNav(link)}
+                className={`w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  isActive(link.href)
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-slate-700 hover:bg-slate-50"
                 }`}
               >
                 {link.name}
-              </a>
+              </button>
             ))}
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 border border-white/30 text-white font-medium rounded-xl">
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                />
-              </svg>
-              <span>Login</span>
-            </button>
+            <div className="pt-2 border-t border-slate-100 space-y-2">
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Sign out
+                </button>
+              ) : (
+                <>
+                  <button onClick={() => { navigate("/login"); setOpen(false); }} className="w-full px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg transition-colors text-left">
+                    Sign in
+                  </button>
+                  <button onClick={() => { navigate("/register"); setOpen(false); }} className="w-full px-4 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors text-center">
+                    Get started free
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

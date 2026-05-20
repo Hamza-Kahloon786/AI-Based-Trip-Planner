@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {heroSectionData} from "../constant/Constant.js"
+import { heroSectionData } from "../constant/Constant.js";
 import { useLocation, useNavigate } from "react-router-dom";
 import FeaturesSection from "./FeaturesImplementation.jsx";
 import TestimonialsSection from "./Testimonials.jsx";
@@ -7,195 +7,209 @@ import HowItWorksSection from "./HowToWork.jsx";
 import FAQSection from "./FaqSection.jsx";
 
 function HeroSection() {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    useEffect(() => {
-      if (!location.hash) return;
-      const id = location.hash.slice(1);
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.slice(1);
+    setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, [location.hash]);
+    }, 100);
+  }, [location.hash]);
+
+  const previewItems = [
+    {
+      label: "Route Distance",
+      value: "1,050 km via KKH",
+      iconBg: "bg-indigo-100",
+      iconColor: "text-indigo-600",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
+      ),
+    },
+    {
+      label: "Live Weather",
+      value: "18°C — Partly Cloudy",
+      iconBg: "bg-emerald-100",
+      iconColor: "text-emerald-600",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+        </svg>
+      ),
+    },
+    {
+      label: "ML Cost Prediction",
+      value: "PKR 95,000 total",
+      iconBg: "bg-orange-100",
+      iconColor: "text-orange-600",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Top Hotel Match",
+      value: "Eagle's Nest — ★ 4.8",
+      iconBg: "bg-purple-100",
+      iconColor: "text-purple-600",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      ),
+    },
+  ];
 
   return (
     <div>
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 relative overflow-hidden">
-      
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-500"></div>
-      </div>    
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:56px_56px] opacity-40 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-40 translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        
-        <div className="text-center max-w-4xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-gradient-to-r from-blue-100 to-green-100 rounded-full border border-blue-200">
-            <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-green-500 rounded-full animate-pulse"></div>
-            <span className="text-blue-700 font-medium">AI-Based Trip Planning</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-600 via-green-500 to-orange-500 bg-clip-text text-transparent">
-              Your Dream Trip,
-            </span>
-            <br />
-            <span className="text-gray-800">Perfectly Planned by AI</span>
-          </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Share your vision, and our AI will analyze every detail to create a personalized trip plan 
-            with destination recommendations, budget optimization, and itinerary management.
-          </p>
-        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-24">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/30">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
+            {/* ── Left: Copy ── */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-6">
+                <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                <span className="text-indigo-700 text-sm font-medium">AI-Powered Trip Planning</span>
               </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">AI Trip Analysis</h2>
-                <p className="text-gray-600">Start your perfect trip planning journey</p>
+
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
+                Plan your{" "}
+                <span className="text-indigo-600">perfect trip</span>
+                {" "}with AI
+              </h1>
+
+              <p className="text-lg text-slate-600 leading-relaxed mb-8 max-w-lg">
+                Share your travel preferences and our AI generates a complete personalized itinerary with real-time weather, route data, ML-powered budget predictions, and hotel recommendations.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 mb-10">
+                <button
+                  onClick={() => navigate('/ai-planning')}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200"
+                >
+                  Start Planning Free
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl border border-slate-200 transition-colors"
+                >
+                  See how it works
+                </button>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  {[
+                    { bg: "bg-indigo-500", letter: "A" },
+                    { bg: "bg-emerald-500", letter: "B" },
+                    { bg: "bg-orange-500", letter: "C" },
+                    { bg: "bg-pink-500", letter: "D" },
+                  ].map((a, i) => (
+                    <div key={i} className={`w-8 h-8 rounded-full ${a.bg} border-2 border-white flex items-center justify-center text-white text-xs font-bold`}>
+                      {a.letter}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-slate-600">
+                  <span className="font-semibold text-slate-900">5,000+</span> trips planned this month
+                </p>
               </div>
             </div>
 
-            <div className="space-y-6">
-               <div className="space-y-4">
-                <div className="h-12 bg-gradient-to-r from-blue-50 to-green-50 rounded-xl border border-blue-100 flex items-center px-4">
-                  <span className="text-gray-600">Your trip details will go here</span>
+            {/* ── Right: Preview Card ── */}
+            <div className="relative">
+              <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
+                <div className="bg-gradient-to-r from-indigo-600 to-emerald-500 px-6 py-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-indigo-100 text-xs font-semibold uppercase tracking-widest mb-1">Your AI Trip Plan</p>
+                      <h3 className="text-white font-bold text-xl">Lahore → Hunza Valley</h3>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur rounded-xl px-3 py-2 text-center">
+                      <p className="text-white text-lg font-bold leading-none">7</p>
+                      <p className="text-indigo-100 text-xs">Days</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="h-12 bg-gradient-to-r from-blue-50 to-green-50 rounded-xl border border-blue-100 flex items-center px-4">
-                  <span className="text-gray-600">AI will analyze and create perfect plan</span>
+
+                <div className="p-6 space-y-3">
+                  {previewItems.map((item, i) => (
+                    <div key={i} className="flex items-center gap-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                      <div className={`w-10 h-10 rounded-lg ${item.iconBg} ${item.iconColor} flex items-center justify-center flex-shrink-0`}>
+                        {item.icon}
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium">{item.label}</p>
+                        <p className="text-sm font-semibold text-slate-800">{item.value}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
 
-               <button
-                className="w-full py-4 bg-gradient-to-r cursor-pointer from-blue-600 to-green-500 text-white font-bold rounded-xl hover:from-blue-700 hover:to-green-600 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
-                onClick={() => navigate('/ai-planning')}
-              >
-                <span    >Start AI Trip Analysis</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            
-            <div className="bg-gradient-to-br from-blue-50 to-green-50 rounded-2xl p-8 border border-blue-100 shadow-xl">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center animate-pulse">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <div className="px-6 pb-6">
+                  <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-center gap-3 cursor-pointer hover:bg-indigo-100 transition-colors" onClick={() => navigate('/projects')}>
+                    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-indigo-900">Full itinerary generated</p>
+                      <p className="text-xs text-indigo-500">10-section AI plan ready to view</p>
+                    </div>
+                    <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">Real-time AI Analysis</h3>
-                  <p className="text-gray-600">Our AI analyzes thousands of data points to create your perfect plan</p>
-                </div>
               </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Planned Trip</span>
-                  <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-green-500 animate-loading"></div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Optimal budget allocation</span>
-                  <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-green-500 animate-loading delay-200"></div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Creating timeline...</span>
-                  <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-green-500 animate-loading delay-400"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800">Sample AI Response</h3>
+              <div className="absolute -top-3 -right-3 bg-white rounded-xl shadow-lg border border-slate-100 px-3 py-2 flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-xs font-semibold text-slate-800">Live AI Analysis</span>
               </div>
-              
-              <div className="space-y-4">
-                <div className="bg-gradient-to-r from-orange-50 to-purple-50 p-4 rounded-xl border border-orange-100">
-                  <h4 className="font-semibold text-orange-700 mb-2">🎯 Budget Breakdown</h4>
-                  <p className="text-gray-700">AI suggests optimal budget allocation for your trip</p>
-                </div>
-                
-                <div className="bg-gradient-to-r from-blue-50 to-green-50 p-4 rounded-xl border border-blue-100">
-                  <h4 className="font-semibold text-blue-700 mb-2">⭐ Top Destination Pick</h4>
-                  <p className="text-gray-700">Perfect destination and hotel matches based on your preferences</p>
-                </div>
-                
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-xl border border-green-100">
-                  <h4 className="font-semibold text-green-700 mb-2">📅 Timeline Suggestion</h4>
-                  <p className="text-gray-700">Detailed trip planning timeline from start to finish</p>
-                </div>
+
+              <div className="absolute -bottom-3 -left-3 bg-white rounded-xl shadow-lg border border-slate-100 px-3 py-2 flex items-center gap-2">
+                <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-xs font-semibold text-slate-800">ML Predictions Active</span>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20">
-          {heroSectionData?.map((stat, index) => (
-            <div key={index} className="text-center p-6 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30">
-              <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-                {stat.value}
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-12 border-t border-slate-100">
+            {heroSectionData.map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="text-3xl font-extrabold text-slate-900 mb-1">{stat.value}</div>
+                <div className="text-sm text-slate-500 font-medium">{stat.label}</div>
               </div>
-              <div className="text-gray-600 mt-2">{stat.label}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        
-        @keyframes loading {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-loading {
-          animation: loading 2s ease-in-out infinite;
-        }
-      `}</style>
-    </div>
-    <FeaturesSection/>
-    <HowItWorksSection/>
-    <TestimonialsSection/>
-    <FAQSection/>
-    
+      <FeaturesSection />
+      <HowItWorksSection />
+      <TestimonialsSection />
+      <FAQSection />
     </div>
   );
 }
 
 export default HeroSection;
-
-
-

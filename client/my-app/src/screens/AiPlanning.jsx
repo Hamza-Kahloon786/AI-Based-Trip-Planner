@@ -1,23 +1,29 @@
 import React from "react";
 import { aiPlanningUserData } from "../constant/Constant";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AiPlanningSchema } from "../constant/YupSchema";
 import { useGenerateReport } from "../hooks/hooks";
 import { useSelector } from "react-redux";
 import { userData } from "../redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
+import CityAutocomplete from "../components/CityAutocomplete";
 
 
+
+const CITY_FIELD_IDS = ['startingCity', 'destination']
 
 function AiPlanning() {
   const [currentSection, setCurrentSection] = React.useState(0);
-  const { mutateAsync, isLoading, error } = useGenerateReport()
+  const [apiError, setApiError] = React.useState(null);
+  const [cityValidity, setCityValidity] = React.useState({ startingCity: false, destination: false });
+  const { mutateAsync, isLoading } = useGenerateReport()
   const user = useSelector(userData)
   const navigator = useNavigate()
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isValid },
     trigger,
     watch,
@@ -36,31 +42,41 @@ function AiPlanning() {
     ? selectedEventsRaw
     : [selectedEventsRaw]
 
+  const currentSectionHasCityFields = formSections[currentSection]?.questions?.some(
+    (q) => CITY_FIELD_IDS.includes(q.id)
+  )
+
+  const citiesAllValid = !currentSectionHasCityFields ||
+    CITY_FIELD_IDS.every((id) => cityValidity[id])
+
   const moveNextPage = async () => {
-    var sectionValid = await trigger(currentSectionItemKeys);
+    if (!citiesAllValid) return
+    const sectionValid = await trigger(currentSectionItemKeys)
     if (sectionValid) {
-      setCurrentSection((prev) => Math.min(formSections.length - 1, prev + 1));
+      setCurrentSection((prev) => Math.min(formSections.length - 1, prev + 1))
     }
-    return;
   };
 
   const onSubmit = async (data) => {
     if (!isLastSection) return
+    setApiError(null)
     const userId = localStorage.getItem('userId')
-    const projectId = 1;
-    const result = await mutateAsync({
-      ...data,
-      userId,
-      projectId,
-    })
+    const projectId = `${data.startingCity}-${data.destination}-${Date.now()}`;
+    const result = await mutateAsync({ ...data, userId, projectId })
 
-    if (result) {
-      console.log('this is result', result)
-      const jobId = result?.aiText
-      localStorage.setItem('aiStreamJobId', jobId)
-      navigator('/projects')
+    // Axios errors come back as the resolved value (ClientApi swallows throws)
+    if (result?.response?.data?.message) {
+      setApiError(result.response.data.message)
+      return
+    }
+    if (!result?.aiText) {
+      setApiError('Failed to generate the trip plan. Please try again.')
+      return
     }
 
+    localStorage.setItem('aiStreamJobId', result.aiText)
+    localStorage.setItem('aiStreamingProjectId', projectId)
+    navigator('/projects')
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -284,11 +300,35 @@ function AiPlanning() {
                   />
                 )}
 
-                {(question.type === "text" ||
-                  question.type === "email" ||
+                {/* City fields get Google Places Autocomplete */}
+                {question.type === "text" && CITY_FIELD_IDS.includes(question.id) && (
+                  <Controller
+                    name={question.id}
+                    control={control}
+                    render={({ field }) => (
+                      <CityAutocomplete
+                        value={field.value}
+                        onChange={(v) => {
+                          field.onChange(v)
+                          setCityValidity((prev) => ({ ...prev, [question.id]: false }))
+                        }}
+                        onBlur={field.onBlur}
+                        placeholder={`Enter ${question.question.toLowerCase()}...`}
+                        inputClassName="w-full px-4 py-3 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all placeholder-gray-400"
+                        onValidityChange={(isValid) =>
+                          setCityValidity((prev) => ({ ...prev, [question.id]: isValid }))
+                        }
+                      />
+                    )}
+                  />
+                )}
+
+                {/* All other input types */}
+                {(question.type === "email" ||
                   question.type === "tel" ||
                   question.type === "number" ||
-                  question.type === "date") && (
+                  question.type === "date" ||
+                  (question.type === "text" && !CITY_FIELD_IDS.includes(question.id))) && (
                     <input
                       type={question.type}
                       name={question.id}
@@ -309,6 +349,15 @@ function AiPlanning() {
               </div>
             ))}
           </div>
+
+          {apiError && (
+            <div className="mx-8 mb-4 mt-2 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border border-red-200">
+              <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-sm text-red-700 font-medium">{apiError}</p>
+            </div>
+          )}
 
           <div className="bg-gradient-to-r from-blue-50 to-green-50 px-8 py-6 border-t border-blue-100 flex justify-between">
             <button
@@ -340,38 +389,45 @@ function AiPlanning() {
               <button
                 type="button"
                 onClick={moveNextPage}
-                className={`px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-medium rounded-xl hover:from-blue-700 hover:to-green-600 transition-all duration-300 transform shadow-lg flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50 `}
+                disabled={!citiesAllValid}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-medium rounded-xl hover:from-blue-700 hover:to-green-600 transition-all duration-300 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                title={!citiesAllValid ? 'Please select valid cities from the dropdown' : ''}
               >
                 Next Section
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             ) : (
               isValid ? (
                 <button
-                  className={`px-8 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-bold rounded-xl hover:from-blue-700 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-3 `}
+                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-bold rounded-xl hover:from-blue-700 hover:to-green-600 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
                   type="button"
+                  disabled={isLoading}
                   onClick={handleSubmit(onSubmit)}
                 >
-                  <span>Generate AI Trip Plan</span>
+                  {isLoading ? (
+                    <>
+                      <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+                      </svg>
+                      <span>Validating route…</span>
+                    </>
+                  ) : (
+                    <span>Generate AI Trip Plan</span>
+                  )}
                 </button>
-              ) : <button className=" px-6 py-3 border-2 font-medium rounded-xl  shadow-lg flex items-center gap-2 bg-gradient-to-r from-blue-600 to-green-500 text-white font-bold rounded-xl disabled:opacity-50  " disabled={true} >First fill input </button>
+              ) : (
+                <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-green-500 text-white font-bold rounded-xl opacity-50 cursor-not-allowed shadow-lg" disabled>
+                  Fill all required fields
+                </button>
+              )
             )}
           </div>
         </div>
       </form>
-      <style jsx>{`
+      <style>{`
         @keyframes float {
           0%,
           100% {

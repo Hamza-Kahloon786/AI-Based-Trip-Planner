@@ -1,51 +1,45 @@
 import * as yup from "yup";
 
 export const AiPlanningSchema = yup.object({
-  planningFor: yup.string().required("Select Planning For"),
-  brideGroomName: yup.string().required("Enter Traveler Name"),
-  contactPersonName: yup.string().required("Enter Contact Person Name"),
-  phoneNumber: yup
-    .string()
-    .required("Enter Contact Person Phone Number")
-    .matches(/^[0-9]+$/, "Phone number must be digits only ex:0300 0000000 ")
-    .min(10, "Phone number must be at least 10 digits"),
-  email: yup
-    .string()
-    .email("Enter a valid email address")
-    .required("Enter Email Address"),
+  // Section 1 — Trip Basic Info
+  startingCity: yup.string()
+    .required("Enter your starting city")
+    .min(2, "City name is too short")
+    .matches(/^[a-zA-Z\s'\-\.,]+$/, "Please enter a valid city name"),
+  destination: yup.string()
+    .required("Enter your destination")
+    .min(2, "Destination name is too short")
+    .matches(/^[a-zA-Z\s'\-\.,]+$/, "Please enter a valid destination"),
+  tripType:      yup.string().required("Select a trip type"),
+  numberOfPeople: yup.number()
+    .typeError("Enter number of people")
+    .positive("Must be at least 1")
+    .integer("Must be a whole number")
+    .required("Enter number of people"),
+  tripDuration:  yup.number()
+    .typeError("Enter trip duration in days")
+    .positive("Must be at least 1 day")
+    .integer("Must be a whole number")
+    .required("Enter trip duration"),
 
-  weddingDate: yup.date().required("Select Trip Date"),
+  // Section 2 — Budget & Travel Style
+  budgetRange:          yup.string().required("Enter your budget range"),
+  travelStyle:          yup.string().required("Select a travel style"),
+  transportPreference:  yup.mixed().optional(),
+  hotelType:            yup.mixed().optional(),
 
-  events: yup
-    .array()
-    .of(yup.string())
-    .min(1, "Select at least one event")
-    .required("Select Events"),
-  country: yup.string().required("Select Country"),
-  city: yup.string().required("Select City"),
-  venueType: yup.string().optional(),
-  preferredAreas: yup.string().optional(),
-  // estimatedGuestCount: yup.string().required("Number of guests").min(1,'must be grather then 1'),
-  totalBudget: yup
-    .number()
-    .typeError("Budget must be a number")
-    .positive("Budget must be a positive number")
-    .required("Enter Budget"),
-  budgetFlexibility: yup.string().required("Select Budget Flexibility"),
-  budgetPriority: yup
-    .array()
-    .of(yup.string())
-    .min(1, "Select at least one budget allocation priority")
-    .required("Select Budget Allocation Priority"),
-  weddingTheme: yup.string().required("Select Trip Theme"),
-  culturalRequirements: yup.string().optional(),
-  specialRituals: yup.string().optional(),
-  cuisineType: yup.array().of(yup.string()).min(1, "Select at least one value"),
-  entertainmentType: yup.array().of(yup.string()).optional(),
-  danceFloor: yup.string().optional(),
-  specialPerformance: yup.string().optional(),
-  religious: yup.string().optional(),
-  specialRequirements: yup.string().optional(),
+  // Section 3 — Travel Preferences (all optional)
+  environmentPreference: yup.mixed().optional(),
+  activities:            yup.mixed().optional(),
+  foodPreference:        yup.string().optional(),
+  familyFriendly:        yup.string().optional(),
+
+  // Section 4 — Travel Details
+  travelMonth:   yup.string().required("Enter your travel month"),
+  flexibleDates: yup.string().optional(),
+
+  // Section 5 — Special Requirements (optional)
+  customRequests: yup.string().optional(),
 });
 
 export const RegisterSchema = yup.object({

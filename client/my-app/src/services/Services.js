@@ -10,15 +10,11 @@ export const registerServices = (endpoint)=>{
     return useMutation({
         mutationFn:(payload)=>clientApi.post(endpoint,payload),
         onSuccess:(data)=>{
-             dispatch(addUser(data))
-            const userId = data?.data?.user?.id
-            const email = data?.data?.user?.email
-            if(userId){
-                localStorage.setItem("userId", userId)
-            }
-            if(email){
-                localStorage.setItem("email", email)
-            }
+            dispatch(addUser(data))
+            const userId = data?.id
+            const email = data?.email
+            if(userId) localStorage.setItem("userId", userId)
+            if(email)  localStorage.setItem("email", email)
         }
     })
 }
@@ -42,8 +38,17 @@ export const generateReportServices = (endPoint)=>{
 }
 
 export const loginServices = (endpoint)=>{
+    const dispatch = useDispatch()
     return useMutation({
-        mutationFn:(payload)=>clientApi.post(endpoint,payload)
+        mutationFn:(payload)=>clientApi.post(endpoint,payload),
+        onSuccess:(data)=>{
+            if(data?.ok && data?.data?.user){
+                const user = data.data.user
+                dispatch(addUser(user))
+                if(user?.id)    localStorage.setItem("userId", user.id)
+                if(user?.email) localStorage.setItem("email", user.email)
+            }
+        }
     })
 }
 

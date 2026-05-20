@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./screens/Footer";
@@ -17,6 +17,15 @@ import AllProjects from "./screens/AllProjects";
 import PrivacyPolicy from "./screens/PrivacyPolicy";
 import TermsOfService from "./screens/TermsOfService";
 
+function ProtectedRoute({ children }) {
+  const location = useLocation();
+  const isLoggedIn = !!localStorage.getItem("userId");
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  return children;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -26,14 +35,20 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/otp" element={<Otp />} />
-        <Route path="/ai-planning" element={<AiPlanning />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/create-testimonials" element={<CreateTestimonial />} />
-        <Route path="/projects" element={<AllProjects />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/create-testimonials" element={<CreateTestimonial />} />
+        <Route
+          path="/ai-planning"
+          element={<ProtectedRoute><AiPlanning /></ProtectedRoute>}
+        />
+        <Route
+          path="/projects"
+          element={<ProtectedRoute><AllProjects /></ProtectedRoute>}
+        />
       </Routes>
       <Footer />
     </BrowserRouter>

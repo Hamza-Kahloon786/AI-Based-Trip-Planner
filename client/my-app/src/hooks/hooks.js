@@ -1,5 +1,4 @@
-import { generateReportServices,generateReportStreamServices, registerServices,getTestimonialsServices, verifyOtpServices, resendOtpServices, loginServices, forgotPasswordServices, resetPasswordServices, refreshTokenServices, createTestimonialServices } from "../services/Services"
-import { getProjectsServices } from "../services/Services"
+import { generateReportServices, generateReportStreamServices, registerServices, getTestimonialsServices, verifyOtpServices, resendOtpServices, loginServices, forgotPasswordServices, resetPasswordServices, refreshTokenServices, createTestimonialServices, getProjectsServices, deleteProjectServices } from "../services/Services"
 
 
 const VERSION = import.meta.env.VITE_API_VERSION
@@ -51,4 +50,8 @@ export const useGetProjects = (userId) => {
 
 export const useGenerateReportStream = (jobId)=>{
       return generateReportStreamServices(jobId ? `api${VERSION}/ai-analysis/stream/${jobId}` : "")
+}
+
+export const useDeleteProject = () => {
+      return deleteProjectServices()
 }

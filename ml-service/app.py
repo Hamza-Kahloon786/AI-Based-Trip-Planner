@@ -151,19 +151,49 @@ def recommend_hotels():
         travel_style     = str(data.get('travel_style', 'standard')).lower().strip()
         group_size       = int(data.get('group_size', 2))
 
+        origin = str(data.get('origin', '')).lower().strip()
+
         if not hotel_dataset:
             return jsonify({'error': 'Hotel dataset not loaded. Run train_models.py first.'}), 503
 
         hotels = hotel_dataset.get('hotels', [])
 
-        # Content-based filtering: match by destination
-        destination_hotels = [
-            h for h in hotels
-            if destination in h['destination'].lower()
-            or any(destination in loc.lower() for loc in h.get('nearby', []))
-        ]
+        # Words that Google Places appends but are not part of the city name
+        STOP_WORDS = {'city', 'district', 'tehsil', 'division', 'area', 'town',
+                      'village', 'road', 'rd', 'new', 'old', 'greater', 'metropolitan'}
+
+        def extract_keywords(query):
+            """Return meaningful words from a location string (strips suffixes like 'City')."""
+            if not query:
+                return []
+            return [w for w in query.lower().split() if w not in STOP_WORDS and len(w) >= 3]
+
+        def match_hotels(query):
+            keywords = extract_keywords(query)
+            if not keywords:
+                return []
+            return [
+                h for h in hotels
+                if any(kw in h['destination'].lower() for kw in keywords)
+                or any(
+                    any(kw in loc.lower() for kw in keywords)
+                    for loc in h.get('nearby', [])
+                )
+            ]
+
+        # 1. Try destination keywords (e.g. "Narang Mandi" → ["narang", "mandi"])
+        destination_hotels = match_hotels(destination)
+        location_used = destination
+
+        # 2. Fallback: origin keywords (e.g. "Lahore City" → ["lahore"] → matches Lahore hotels)
+        if not destination_hotels and origin:
+            destination_hotels = match_hotels(origin)
+            location_used = origin
+
+        # 3. Last resort: all hotels
         if not destination_hotels:
-            destination_hotels = hotels  # fall back to all hotels
+            destination_hotels = hotels
+            location_used = 'pakistan'
 
         # Score each hotel
         scored = []
@@ -201,6 +231,7 @@ def recommend_hotels():
 
         return jsonify({
             'destination':      destination,
+            'location_used':    location_used,
             'recommendations':  top5,
             'total_found':      len(destination_hotels),
             'algorithm':        'content_based_filtering',

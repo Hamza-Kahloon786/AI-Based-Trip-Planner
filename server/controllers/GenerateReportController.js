@@ -72,6 +72,7 @@ export const generateReportController = async (req, res) => {
             getWeatherForecast(dest),
             recommendHotels({
                 destination:      dest,
+                origin:           origin,
                 budget_per_night: parseBudgetPerNight(budgetRange, days),
                 travel_style:     style,
                 group_size:       people,
@@ -164,6 +165,19 @@ export const getProjectsController = async (req, res) => {
         if (!userId) return res.status(400).json({ message: "userId is required" });
         const projects = await WeddingResult.find({ userId }).sort({ _id: -1 });
         return res.status(200).json({ ok: true, data: projects });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const deleteProjectController = async (req, res) => {
+    try {
+        const { userId, projectId } = req.params;
+        if (!userId || !projectId) return res.status(400).json({ message: "userId and projectId are required" });
+        const deleted = await WeddingResult.findOneAndDelete({ _id: projectId, userId });
+        if (!deleted) return res.status(404).json({ message: "Project not found" });
+        return res.status(200).json({ ok: true, message: "Project deleted" });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error" });

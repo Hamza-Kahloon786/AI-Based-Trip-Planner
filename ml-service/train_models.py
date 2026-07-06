@@ -24,7 +24,7 @@ def generate_trip_cost_data(n=3000):
     group_size         = np.random.randint(1, 21, n)
     trip_days          = np.random.randint(1, 15, n)
     transport_mode     = np.random.randint(0, 5, n)   # 0=bus 1=train 2=car 3=jeep 4=flight
-    accommodation_type = np.random.randint(0, 6, n)   # 0=camping → 5=resort
+    accommodation_type = np.random.randint(0, 6, n)   # 0=camping -> 5=resort
     travel_style       = np.random.randint(0, 3, n)   # 0=budget 1=standard 2=luxury
 
     # Realistic PKR rates
@@ -90,7 +90,7 @@ def train_cost_model():
     model_path = os.path.join(MODEL_DIR, 'cost_model.pkl')
     with open(model_path, 'wb') as f:
         pickle.dump(model, f)
-    print(f"\nModel saved → {model_path}")
+    print(f"\nModel saved -> {model_path}")
     return model
 
 
@@ -142,29 +142,57 @@ def create_hotel_dataset():
         {'name': 'Fairy Meadows Camp',         'destination': 'fairy meadows', 'style': 'budget',   'price_per_night':  1500, 'rating': 4.2, 'type': 'Camping',    'amenities': ['Meals', 'Nanga Parbat View', 'Campfire'],                'family_friendly': False, 'nearby': ['nanga parbat base camp']},
         {'name': 'Raikot Serai',               'destination': 'fairy meadows', 'style': 'standard', 'price_per_night':  4000, 'rating': 4.0, 'type': 'Guest House','amenities': ['Meals', 'Mountain View'],                                'family_friendly': True,  'nearby': ['fairy meadows trek', 'nanga parbat']},
 
-        # ── Islamabad ──────────────────────────────────────
-        {'name': 'Marriott Islamabad',         'destination': 'islamabad',     'style': 'luxury',   'price_per_night': 30000, 'rating': 4.8, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Multiple Restaurants', 'Gym'],   'family_friendly': True,  'nearby': ['blue area', 'centaurus']},
-        {'name': 'Serena Hotel Islamabad',     'destination': 'islamabad',     'style': 'luxury',   'price_per_night': 28000, 'rating': 4.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Restaurant'],                     'family_friendly': True,  'nearby': ['diplomatic enclave', 'f6']},
-        {'name': 'Hotel One Islamabad',        'destination': 'islamabad',     'style': 'standard', 'price_per_night':  9000, 'rating': 4.2, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast', 'Gym'],                              'family_friendly': True,  'nearby': ['f6', 'centaurus']},
-        {'name': 'Ramada Islamabad',           'destination': 'islamabad',     'style': 'standard', 'price_per_night':  7500, 'rating': 4.0, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Pool'],                            'family_friendly': True,  'nearby': ['blue area']},
+        # ── Islamabad / Rawalpindi ─────────────────────────
+        {'name': 'Marriott Islamabad',         'destination': 'islamabad',     'style': 'luxury',   'price_per_night': 30000, 'rating': 4.8, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Multiple Restaurants', 'Gym'],   'family_friendly': True,  'nearby': ['blue area', 'centaurus', 'rawalpindi', 'taxila', 'wah cantt', 'attock', 'chakwal', 'jhelum', 'hasan abdal', 'abbottabad']},
+        {'name': 'Serena Hotel Islamabad',     'destination': 'islamabad',     'style': 'luxury',   'price_per_night': 28000, 'rating': 4.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Restaurant'],                     'family_friendly': True,  'nearby': ['diplomatic enclave', 'f6', 'rawalpindi', 'taxila', 'wah cantt', 'attock']},
+        {'name': 'Hotel One Islamabad',        'destination': 'islamabad',     'style': 'standard', 'price_per_night':  9000, 'rating': 4.2, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast', 'Gym'],                              'family_friendly': True,  'nearby': ['f6', 'centaurus', 'rawalpindi', 'chakwal', 'jhelum', 'taxila']},
+        {'name': 'Ramada Islamabad',           'destination': 'islamabad',     'style': 'standard', 'price_per_night':  7500, 'rating': 4.0, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Pool'],                            'family_friendly': True,  'nearby': ['blue area', 'rawalpindi', 'wah cantt', 'attock', 'hasan abdal']},
+        {'name': 'Potohar Hotel Rawalpindi',   'destination': 'rawalpindi',    'style': 'standard', 'price_per_night':  6000, 'rating': 3.9, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Parking'],                         'family_friendly': True,  'nearby': ['islamabad', 'taxila', 'wah cantt', 'chakwal', 'attock', 'jhelum', 'hasan abdal']},
+        {'name': 'Budget Inn Rawalpindi',      'destination': 'rawalpindi',    'style': 'budget',   'price_per_night':  2500, 'rating': 3.4, 'type': 'Hotel',      'amenities': ['Basic Rooms', 'WiFi'],                                   'family_friendly': False, 'nearby': ['islamabad', 'taxila', 'wah cantt', 'attock']},
 
-        # ── Lahore ─────────────────────────────────────────
-        {'name': 'Pearl Continental Lahore',   'destination': 'lahore',        'style': 'luxury',   'price_per_night': 25000, 'rating': 4.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Multiple Restaurants'],           'family_friendly': True,  'nearby': ['liberty', 'gulberg']},
-        {'name': 'Avari Hotel Lahore',         'destination': 'lahore',        'style': 'luxury',   'price_per_night': 22000, 'rating': 4.6, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Restaurant', 'Gym'],                     'family_friendly': True,  'nearby': ['mall road', 'gulberg']},
-        {'name': 'Hotel One Lahore',           'destination': 'lahore',        'style': 'standard', 'price_per_night':  8000, 'rating': 4.3, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast', 'Gym'],                              'family_friendly': True,  'nearby': ['gulberg', 'mm alam road']},
-        {'name': 'Grand Hotel Lahore',         'destination': 'lahore',        'style': 'budget',   'price_per_night':  3500, 'rating': 3.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Basic Rooms'],                                   'family_friendly': True,  'nearby': ['data darbar', 'anarkali']},
+        # ── Lahore & Central Punjab ────────────────────────
+        {'name': 'Pearl Continental Lahore',   'destination': 'lahore',        'style': 'luxury',   'price_per_night': 25000, 'rating': 4.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Multiple Restaurants'],           'family_friendly': True,  'nearby': ['liberty', 'gulberg', 'pattoki', 'raiwind', 'kasur', 'sheikhupura', 'gujranwala', 'narowal', 'sialkot', 'okara', 'sahiwal', 'nankana sahib', 'narang mandi', 'narang', 'muridke', 'ferozwala', 'shahdara', 'chunian']},
+        {'name': 'Avari Hotel Lahore',         'destination': 'lahore',        'style': 'luxury',   'price_per_night': 22000, 'rating': 4.6, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Restaurant', 'Gym'],                     'family_friendly': True,  'nearby': ['mall road', 'gulberg', 'pattoki', 'raiwind', 'kasur', 'sheikhupura', 'gujranwala', 'sialkot', 'narang mandi', 'narang', 'muridke', 'ferozwala']},
+        {'name': 'Hotel One Lahore',           'destination': 'lahore',        'style': 'standard', 'price_per_night':  8000, 'rating': 4.3, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast', 'Gym'],                              'family_friendly': True,  'nearby': ['gulberg', 'mm alam road', 'pattoki', 'raiwind', 'kasur', 'okara', 'sahiwal', 'narang mandi', 'narang', 'sheikhupura', 'muridke']},
+        {'name': 'Grand Hotel Lahore',         'destination': 'lahore',        'style': 'budget',   'price_per_night':  3500, 'rating': 3.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Basic Rooms'],                                   'family_friendly': True,  'nearby': ['data darbar', 'anarkali', 'pattoki', 'raiwind', 'kasur', 'sheikhupura', 'okara', 'nankana sahib', 'narang mandi', 'narang', 'ferozwala', 'chunian']},
+        {'name': 'City Guest House Lahore',    'destination': 'lahore',        'style': 'budget',   'price_per_night':  2200, 'rating': 3.5, 'type': 'Guest House','amenities': ['Basic Rooms', 'Meals'],                                  'family_friendly': False, 'nearby': ['pattoki', 'raiwind', 'kasur', 'sheikhupura', 'muridke', 'nankana sahib', 'narang mandi', 'narang', 'ferozwala']},
+
+        # ── Faisalabad & Central Punjab ────────────────────
+        {'name': 'Hotel One Faisalabad',       'destination': 'faisalabad',    'style': 'standard', 'price_per_night':  7000, 'rating': 4.1, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast', 'Gym'],                              'family_friendly': True,  'nearby': ['jhang', 'chiniot', 'toba tek singh', 'sargodha', 'gojra', 'samundri']},
+        {'name': 'Al Falah Hotel Faisalabad',  'destination': 'faisalabad',    'style': 'budget',   'price_per_night':  3000, 'rating': 3.6, 'type': 'Hotel',      'amenities': ['WiFi', 'Basic Rooms', 'Restaurant'],                     'family_friendly': True,  'nearby': ['jhang', 'chiniot', 'toba tek singh', 'sargodha', 'gojra']},
+
+        # ── Multan & Southern Punjab ────────────────────────
+        {'name': 'Ramada Hotel Multan',        'destination': 'multan',        'style': 'luxury',   'price_per_night': 12000, 'rating': 4.4, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Restaurant', 'Gym'],                     'family_friendly': True,  'nearby': ['bahawalpur', 'lodhran', 'khanewal', 'vehari', 'muzaffargarh', 'dera ghazi khan']},
+        {'name': 'Hotel One Multan',           'destination': 'multan',        'style': 'standard', 'price_per_night':  6500, 'rating': 4.0, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast'],                                     'family_friendly': True,  'nearby': ['bahawalpur', 'lodhran', 'khanewal', 'vehari']},
+        {'name': 'Budget Hotel Multan',        'destination': 'multan',        'style': 'budget',   'price_per_night':  2800, 'rating': 3.5, 'type': 'Hotel',      'amenities': ['Basic Rooms', 'WiFi'],                                   'family_friendly': False, 'nearby': ['bahawalpur', 'lodhran', 'khanewal', 'dera ghazi khan']},
+
+        # ── Karachi ────────────────────────────────────────
+        {'name': 'Pearl Continental Karachi',  'destination': 'karachi',       'style': 'luxury',   'price_per_night': 28000, 'rating': 4.7, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Spa', 'Sea View', 'Restaurant'],         'family_friendly': True,  'nearby': ['clifton', 'defence', 'hyderabad', 'thatta', 'hawkes bay', 'badin']},
+        {'name': 'Marriott Karachi',           'destination': 'karachi',       'style': 'luxury',   'price_per_night': 26000, 'rating': 4.6, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Gym', 'Restaurant'],                     'family_friendly': True,  'nearby': ['clifton', 'defence', 'hyderabad', 'thatta']},
+        {'name': 'Hotel Faran Karachi',        'destination': 'karachi',       'style': 'standard', 'price_per_night':  5500, 'rating': 3.9, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'AC Rooms'],                        'family_friendly': True,  'nearby': ['saddar', 'defence', 'hyderabad', 'badin', 'thatta']},
+        {'name': 'Budget Inn Karachi',         'destination': 'karachi',       'style': 'budget',   'price_per_night':  2500, 'rating': 3.3, 'type': 'Hotel',      'amenities': ['Basic Rooms', 'WiFi'],                                   'family_friendly': False, 'nearby': ['saddar', 'hyderabad', 'thatta']},
+
+        # ── Peshawar & KPK ─────────────────────────────────
+        {'name': 'Pearl Continental Peshawar', 'destination': 'peshawar',      'style': 'luxury',   'price_per_night': 18000, 'rating': 4.5, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Restaurant', 'Gym'],                     'family_friendly': True,  'nearby': ['nowshera', 'charsadda', 'mardan', 'khyber pass', 'landi kotal', 'darra adam khel']},
+        {'name': 'Hotel One Peshawar',         'destination': 'peshawar',      'style': 'standard', 'price_per_night':  6000, 'rating': 4.0, 'type': 'Hotel',      'amenities': ['WiFi', 'Breakfast', 'Restaurant'],                       'family_friendly': True,  'nearby': ['nowshera', 'charsadda', 'mardan', 'khyber pass']},
+        {'name': 'Budget Hotel Peshawar',      'destination': 'peshawar',      'style': 'budget',   'price_per_night':  2200, 'rating': 3.4, 'type': 'Hotel',      'amenities': ['Basic Rooms', 'WiFi'],                                   'family_friendly': False, 'nearby': ['nowshera', 'charsadda', 'landi kotal']},
+
+        # ── Quetta ─────────────────────────────────────────
+        {'name': 'Serena Hotel Quetta',        'destination': 'quetta',        'style': 'luxury',   'price_per_night': 15000, 'rating': 4.5, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Garden', 'Gym'],                   'family_friendly': True,  'nearby': ['ziarat', 'mastung', 'turbat', 'kalat', 'khuzdar']},
+        {'name': 'Hotel Bloom Star Quetta',    'destination': 'quetta',        'style': 'standard', 'price_per_night':  5000, 'rating': 3.8, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant'],                                    'family_friendly': True,  'nearby': ['ziarat', 'mastung', 'kalat']},
+        {'name': 'Budget Hotel Quetta',        'destination': 'quetta',        'style': 'budget',   'price_per_night':  2000, 'rating': 3.3, 'type': 'Hotel',      'amenities': ['Basic Rooms'],                                           'family_friendly': False, 'nearby': ['ziarat', 'mastung']},
 
         # ── Gwadar ─────────────────────────────────────────
-        {'name': 'PC Gwadar',                  'destination': 'gwadar',        'style': 'luxury',   'price_per_night': 18000, 'rating': 4.5, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Sea View', 'Pool'],                'family_friendly': True,  'nearby': ['hammerhead', 'ormara']},
-        {'name': 'Gwadar Marriott',            'destination': 'gwadar',        'style': 'luxury',   'price_per_night': 20000, 'rating': 4.6, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Restaurant', 'Gym'],                     'family_friendly': True,  'nearby': ['gwadar port', 'hammerhead']},
-        {'name': 'Beach View Hotel Gwadar',    'destination': 'gwadar',        'style': 'standard', 'price_per_night':  5000, 'rating': 3.9, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Sea View'],                        'family_friendly': True,  'nearby': ['hammerhead beach']},
+        {'name': 'PC Gwadar',                  'destination': 'gwadar',        'style': 'luxury',   'price_per_night': 18000, 'rating': 4.5, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Sea View', 'Pool'],                'family_friendly': True,  'nearby': ['hammerhead', 'ormara', 'pasni', 'turbat']},
+        {'name': 'Gwadar Marriott',            'destination': 'gwadar',        'style': 'luxury',   'price_per_night': 20000, 'rating': 4.6, 'type': 'Hotel',      'amenities': ['WiFi', 'Pool', 'Restaurant', 'Gym'],                     'family_friendly': True,  'nearby': ['gwadar port', 'hammerhead', 'ormara']},
+        {'name': 'Beach View Hotel Gwadar',    'destination': 'gwadar',        'style': 'standard', 'price_per_night':  5000, 'rating': 3.9, 'type': 'Hotel',      'amenities': ['WiFi', 'Restaurant', 'Sea View'],                        'family_friendly': True,  'nearby': ['hammerhead beach', 'ormara', 'pasni']},
     ]
 
     dataset = {'hotels': hotels, 'total': len(hotels)}
     path = os.path.join(MODEL_DIR, 'hotel_dataset.json')
     with open(path, 'w') as f:
         json.dump(dataset, f, indent=2)
-    print(f"Hotel dataset saved → {path}")
+    print(f"Hotel dataset saved -> {path}")
     print(f"Total hotels: {len(hotels)}")
     return dataset
 

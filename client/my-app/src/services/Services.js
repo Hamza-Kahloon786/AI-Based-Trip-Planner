@@ -1,8 +1,7 @@
-import {useMutation} from "@tanstack/react-query"
+import {useMutation, useQuery} from "@tanstack/react-query"
 import {clientApi} from "../clientApi/ClientApi"
 import {addUser} from "../redux/slice/authSlice"
 import { useDispatch } from "react-redux"
-import {useQuery} from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 
 export const registerServices = (endpoint)=>{
@@ -88,6 +87,13 @@ export const getProjectsServices = (endpoint) => {
     return useQuery({
         queryKey: ["projects", endpoint],
         queryFn: () => clientApi.get(endpoint)
+    })
+}
+
+export const deleteProjectServices = () => {
+    return useMutation({
+        mutationFn: ({ userId, projectId }) =>
+            clientApi.delete(`api${import.meta.env.VITE_API_VERSION}/ai-analysis/projects/${userId}/${projectId}`)
     })
 }
 

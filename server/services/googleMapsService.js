@@ -23,8 +23,9 @@ export const validateLocation = async (name) => {
         // Must be a specific geographic place type (not route/country/establishment)
         const acceptableTypes = [
             'locality', 'sublocality', 'sublocality_level_1',
-            'administrative_area_level_2', 'administrative_area_level_3',
-            'natural_feature', 'colloquial_area', 'neighborhood',
+            'administrative_area_level_1', 'administrative_area_level_2',
+            'administrative_area_level_3', 'natural_feature',
+            'colloquial_area', 'neighborhood',
         ];
         if (!types.some(t => acceptableTypes.includes(t))) return false;
 
@@ -38,6 +39,7 @@ export const validateLocation = async (name) => {
         // (prevents fuzzy matches like "abc" → "Abbottabad")
         const cityComp = components.find(c =>
             c.types.includes('locality') ||
+            c.types.includes('administrative_area_level_1') ||
             c.types.includes('administrative_area_level_2') ||
             c.types.includes('sublocality')
         );

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useGenerateReportStream, useGetProjects } from '../hooks/hooks'
+import { useGenerateReportStream, useGetProjects, useDeleteProject } from '../hooks/hooks'
+import { useQueryClient } from '@tanstack/react-query'
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
@@ -95,12 +96,34 @@ function AllProjects() {
 
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [selectedProjectId, setSelectedProjectId] = useState(() => projects[0]?._id)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+  const { mutateAsync: deleteProject, isLoading: deleting } = useDeleteProject()
+  const queryClient = useQueryClient()
+
+  const handleDelete = async (projectId) => {
+    const userId = localStorage.getItem('userId')
+    await deleteProject({ userId, projectId })
+    queryClient.invalidateQueries({ queryKey: ['projects'] })
+    if (selectedProjectId === projectId) setSelectedProjectId(null)
+    setConfirmDeleteId(null)
+  }
 
   useEffect(() => {
     if (!selectedProjectId && projects?.length) {
       setSelectedProjectId(projects[0]._id)
     }
   }, [projects])
+
+  // When streaming finishes the project is saved to DB — refresh sidebar
+  const wasStreamingRef = useRef(false)
+  useEffect(() => {
+    if (wasStreamingRef.current && !isStreaming && streamText) {
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['projects'] })
+      }, 800)
+    }
+    wasStreamingRef.current = isStreaming
+  }, [isStreaming])
 
   const selectedProject = projects.find((p) => p._id === selectedProjectId)
 
@@ -230,20 +253,32 @@ ${planRef.current.innerHTML}
                         ? new Date(project.createdAt).toLocaleDateString('en-PK', { day: 'numeric', month: 'short' })
                         : ''
                       return (
-                        <button
-                          key={project._id}
-                          type="button"
-                          onClick={() => setSelectedProjectId(project._id)}
-                          className={`w-full text-left px-4 py-3 rounded-xl transition-all border mb-1 ${isActive
-                            ? 'bg-gradient-to-r from-indigo-600 to-emerald-500 text-white border-transparent shadow-lg'
-                            : 'bg-white/70 hover:bg-white border-gray-100 text-gray-800'
-                          }`}
-                        >
-                          <div className="font-semibold text-sm truncate">{getDisplayName(project)}</div>
-                          {dateStr && (
-                            <div className={`text-xs mt-0.5 ${isActive ? 'text-white/80' : 'text-gray-400'}`}>{dateStr}</div>
-                          )}
-                        </button>
+                        <div key={project._id} className="relative group mb-1">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedProjectId(project._id)}
+                            className={`w-full text-left px-4 py-3 pr-10 rounded-xl transition-all border ${isActive
+                              ? 'bg-gradient-to-r from-indigo-600 to-emerald-500 text-white border-transparent shadow-lg'
+                              : 'bg-white/70 hover:bg-white border-gray-100 text-gray-800'
+                            }`}
+                          >
+                            <div className="font-semibold text-sm truncate">{getDisplayName(project)}</div>
+                            {dateStr && (
+                              <div className={`text-xs mt-0.5 ${isActive ? 'text-white/80' : 'text-gray-400'}`}>{dateStr}</div>
+                            )}
+                          </button>
+                          {/* Delete button — visible on hover or when active */}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(project._id) }}
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${isActive ? 'hover:bg-white/20 text-white' : 'hover:bg-red-50 text-red-400'}`}
+                            title="Delete project"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
                       )
                     })
                   )}
@@ -289,7 +324,42 @@ ${planRef.current.innerHTML}
                   </div>
 
                   <div className="p-5 min-h-[260px] bg-gradient-to-br from-white to-blue-50/40">
-                    {contentToShow ? (
+                    {isGenerating && !contentToShow ? (
+                      <div className="flex flex-col items-center justify-center min-h-[340px] text-center gap-6">
+                        {/* Spinner */}
+                        <div className="relative w-20 h-20">
+                          <div className="absolute inset-0 rounded-full border-4 border-blue-100" />
+                          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-emerald-400 animate-spin" />
+                          <div className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-50 to-emerald-50 flex items-center justify-center">
+                            <svg className="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        {/* Message */}
+                        <div className="space-y-2">
+                          <p className="text-lg font-bold text-slate-800">AI is crafting your trip plan</p>
+                          <p className="text-sm text-slate-500">Please wait a moment while we analyze your route and generate personalized recommendations...</p>
+                        </div>
+
+                        {/* Animated dots progress bar */}
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                          <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                        </div>
+
+                        {/* Steps hint */}
+                        <div className="flex flex-wrap justify-center gap-2 max-w-sm">
+                          {['Route Analysis', 'Cost Estimation', 'Hotel Recommendations', 'Itinerary Planning'].map((step) => (
+                            <span key={step} className="px-3 py-1 text-xs font-medium bg-white border border-indigo-100 text-indigo-600 rounded-full shadow-sm animate-pulse">
+                              {step}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : contentToShow ? (
                       <div ref={planRef} className="text-[15px] leading-7 text-gray-700 [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:bg-blue-50 [&_th]:border [&_th]:border-blue-200 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_td]:border [&_td]:border-gray-200 [&_td]:px-3 [&_td]:py-2 [&_tr:nth-child(even)]:bg-gray-50 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-blue-700 [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-semibold [&_h3]:text-gray-800 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_hr]:border-gray-200 [&_hr]:my-4">
                         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                           {contentToShow}
@@ -326,6 +396,52 @@ ${planRef.current.innerHTML}
           </div>
         </div>
       </div>
+    {/* ── Delete confirmation modal ── */}
+    {confirmDeleteId && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-800">Delete Project</h3>
+              <p className="text-sm text-slate-500 mt-0.5">This action cannot be undone.</p>
+            </div>
+          </div>
+          <p className="text-sm text-slate-600">
+            Are you sure you want to delete <span className="font-semibold text-slate-800">{getDisplayName(projects.find(p => p._id === confirmDeleteId) || {})}</span>? The AI plan and all data will be permanently removed.
+          </p>
+          <div className="flex gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => setConfirmDeleteId(null)}
+              className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={deleting}
+              onClick={() => handleDelete(confirmDeleteId)}
+              className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {deleting ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+                  </svg>
+                  Deleting…
+                </>
+              ) : 'Delete'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   )
 }

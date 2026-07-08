@@ -16,12 +16,12 @@ export const predictTripCost = async ({ distance_km, group_size, trip_days, tran
     }
 };
 
-export const recommendHotels = async ({ destination, budget_per_night, travel_style, group_size }) => {
+export const recommendHotels = async ({ destination, origin, budget_per_night, travel_style, group_size }) => {
     try {
         const res  = await fetch(`${ML_SERVICE_URL}/recommend-hotels`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ destination, budget_per_night, travel_style, group_size }),
+            body:    JSON.stringify({ destination, origin, budget_per_night, travel_style, group_size }),
             signal:  AbortSignal.timeout(6000),
         });
         const data = await res.json();

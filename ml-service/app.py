@@ -15,8 +15,12 @@ CORS(app)
 
 MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
 
-cost_model   = None
-hotel_dataset = None
+cost_model     = None
+hotel_dataset  = None
+climate_dataset = None
+
+MONTHS = ['january', 'february', 'march', 'april', 'may', 'june',
+          'july', 'august', 'september', 'october', 'november', 'december']
 
 # Encoding maps (must match train_models.py)
 TRANSPORT_MAP     = {'bus': 0, 'train': 1, 'car': 2, 'jeep': 3, 'flight': 4, 'mixed': 2, 'private driver': 2}
@@ -26,10 +30,11 @@ STYLE_MAP         = {'budget': 0, 'standard': 1, 'luxury': 2}
 
 
 def load_models():
-    global cost_model, hotel_dataset
+    global cost_model, hotel_dataset, climate_dataset
     try:
-        cost_path  = os.path.join(MODEL_DIR, 'cost_model.pkl')
-        hotel_path = os.path.join(MODEL_DIR, 'hotel_dataset.json')
+        cost_path    = os.path.join(MODEL_DIR, 'cost_model.pkl')
+        hotel_path   = os.path.join(MODEL_DIR, 'hotel_dataset.json')
+        climate_path = os.path.join(MODEL_DIR, 'climate_dataset.json')
 
         if os.path.exists(cost_path):
             with open(cost_path, 'rb') as f:
@@ -44,6 +49,13 @@ def load_models():
             print(f"Hotel dataset loaded ({hotel_dataset.get('total', 0)} hotels).")
         else:
             print("WARNING: hotel_dataset.json not found. Run train_models.py first.")
+
+        if os.path.exists(climate_path):
+            with open(climate_path, 'r', encoding='utf-8') as f:
+                climate_dataset = json.load(f)
+            print(f"Climate dataset loaded ({climate_dataset.get('total', 0)} destinations).")
+        else:
+            print("WARNING: climate_dataset.json not found. Run train_models.py first.")
 
     except Exception as e:
         print(f"Error loading models: {e}")
@@ -98,8 +110,9 @@ def cost_breakdown(distance_km, group_size, trip_days, transport_enc, accommodat
 def health():
     return jsonify({
         'status': 'ok',
-        'cost_model_loaded':   cost_model is not None,
+        'cost_model_loaded':    cost_model is not None,
         'hotel_dataset_loaded': hotel_dataset is not None,
+        'climate_dataset_loaded': climate_dataset is not None,
     })
 
 
@@ -235,6 +248,88 @@ def recommend_hotels():
             'recommendations':  top5,
             'total_found':      len(destination_hotels),
             'algorithm':        'content_based_filtering',
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/climate-suitability', methods=['POST'])
+def climate_suitability():
+    """Return seasonal climate suitability for a destination + travel month."""
+    try:
+        import datetime
+        data = request.json or {}
+
+        destination = str(data.get('destination', '')).lower().strip()
+        raw_month   = str(data.get('month', '')).lower().strip()
+
+        # ── Normalise month (name, number, or partial like "jul") → month name ──
+        month_name = None
+        if raw_month:
+            if raw_month.isdigit():
+                idx = int(raw_month) - 1
+                if 0 <= idx < 12:
+                    month_name = MONTHS[idx]
+            else:
+                for m in MONTHS:
+                    if raw_month[:3] == m[:3]:
+                        month_name = m
+                        break
+        if not month_name:
+            month_name = MONTHS[datetime.date.today().month - 1]   # default: current month
+
+        if not climate_dataset:
+            return jsonify({'error': 'Climate dataset not loaded. Run train_models.py first.'}), 503
+
+        destinations = climate_dataset.get('destinations', {})
+
+        # ── Match destination (keyword-based, like hotel matching) ──
+        STOP = {'city', 'district', 'tehsil', 'division', 'valley', 'area', 'town'}
+        words = [w for w in destination.split() if w not in STOP and len(w) >= 3]
+
+        matched_key = None
+        if destination in destinations:
+            matched_key = destination
+        else:
+            for key in destinations:
+                if key in destination or destination in key:
+                    matched_key = key
+                    break
+                if any(w in key for w in words) or any(kw in destination for kw in key.split()):
+                    matched_key = key
+                    break
+
+        if not matched_key:
+            # Unknown destination — return a neutral, honest response
+            return jsonify({
+                'destination':   destination,
+                'month':         month_name.title(),
+                'matched':       False,
+                'suitability_score': 60,
+                'verdict':       'Unknown',
+                'recommendation': f"No climate profile for '{destination}'. Check the live forecast closer to travel.",
+                'is_recommended': True,
+                'best_months':   [],
+            })
+
+        dest_data = destinations[matched_key]
+        m = dest_data['months'][month_name]
+
+        return jsonify({
+            'destination':       matched_key,
+            'month':             month_name.title(),
+            'matched':           True,
+            'avg_high_c':        m['avg_high_c'],
+            'avg_low_c':         m['avg_low_c'],
+            'condition':         m['condition'],
+            'rain_level':        m['rain_level'],
+            'accessible':        m['accessible'],
+            'suitability_score': m['suitability_score'],
+            'verdict':           m['verdict'],
+            'recommendation':    m['note'],
+            'is_recommended':    m['suitability_score'] >= 45 and m['accessible'],
+            'best_months':       dest_data['best_months'],
+            'algorithm':         'seasonal_climate_dataset',
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500

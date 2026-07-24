@@ -1,42 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { services } from '../constant/Constant.js';
-
-const serviceIcons = [
-  // AI Trip Planning
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2" />
-  </svg>,
-  // Hotel Matching
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-  </svg>,
-  // Smart Timeline
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-  </svg>,
-  // Budget Optimizer
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>,
-  // Itinerary Designer
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-  </svg>,
-  // Analytics Dashboard
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-  </svg>,
-];
-
-const iconStyles = [
-  'bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25',
-  'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25',
-  'bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/25',
-  'bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-lg shadow-fuchsia-500/25',
-  'bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/25',
-  'bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-lg shadow-cyan-500/25',
-];
+import { useNavigate } from 'react-router-dom';
 
 const contactDetails = [
   {
@@ -72,24 +35,15 @@ const contactDetails = [
   },
 ];
 
-const ServiceContactPage = () => {
+const ContactUs = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === '/services' && location.hash === '#get-in-touch-form') {
-      const el = document.getElementById('get-in-touch-form');
-      if (el) {
-        const y = el.getBoundingClientRect().top + window.pageYOffset - 100;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }
-      return;
-    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [location.pathname, location.hash]);
+  }, []);
 
-  const handleContactSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
   };
@@ -100,71 +54,39 @@ const ServiceContactPage = () => {
       {/* ── Header ── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white py-24">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:56px_56px] opacity-40 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-violet-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/3 pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-700 text-sm font-semibold">What We Offer</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-emerald-500" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-700 text-sm font-semibold">Contact Us</span>
           </div>
           <h1 className="font-display text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
-            Services powered by <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-emerald-500 bg-clip-text text-transparent">advanced AI</span>
+            Let's{" "}
+            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-emerald-500 bg-clip-text text-transparent">get in touch</span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            From intelligent itinerary generation to destination matching, our platform covers every aspect of trip planning.
+          <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            Questions about planning your trip, or want to work with us? Reach out — we usually reply within 24 hours.
           </p>
         </div>
       </section>
 
-      {/* ── Services Grid ── */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="group bg-white border border-slate-200/70 rounded-2xl p-7 shadow-[0_1px_3px_rgba(15,23,42,0.04)] hover:shadow-[0_20px_40px_-16px_rgba(79,70,229,0.25)] hover:border-indigo-200 transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className={`w-12 h-12 rounded-xl ${iconStyles[index % iconStyles.length]} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300`}>
-                  {serviceIcons[index % serviceIcons.length]}
-                </div>
-                <h3 className="font-display text-lg font-bold text-slate-900 mb-2">{service.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">{service.description}</p>
-                <ul className="space-y-2">
-                  {service.features.map((feat, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-slate-500">
-                      <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                      {feat}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Contact ── */}
-      <section id="get-in-touch-form" className="py-24 bg-slate-50">
+      {/* ── Body ── */}
+      <section className="pb-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="font-display text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Get in touch</h2>
-            <p className="text-lg text-slate-600">Have a question or need help planning? We're here for you.</p>
-          </div>
-
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Contact Info */}
+
+            {/* Contact info */}
             <div className="space-y-4">
               {contactDetails.map((item, i) => (
-                <div key={i} className="flex items-start gap-4 bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
-                  <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div key={i} className="flex items-start gap-4 bg-white border border-slate-200/70 rounded-xl p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04)] hover:shadow-lg hover:border-indigo-200 transition-all duration-300">
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25 rounded-lg flex items-center justify-center flex-shrink-0">
                     {item.icon}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">{item.label}</p>
-                    <p className="text-sm text-slate-700 font-medium">{item.value}</p>
+                    <p className="text-sm text-slate-700 font-medium break-all">{item.value}</p>
                     <p className="text-xs text-slate-400 mt-0.5">{item.sub}</p>
                   </div>
                 </div>
@@ -173,7 +95,7 @@ const ServiceContactPage = () => {
               <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-700 rounded-xl p-6 text-white shadow-lg shadow-indigo-500/25">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
                 <h3 className="relative font-display font-bold text-lg mb-2">Ready to plan your trip?</h3>
-                <p className="relative text-indigo-200 text-sm mb-4">Start with our AI planner and get a complete itinerary in minutes.</p>
+                <p className="relative text-indigo-200 text-sm mb-4">Skip the wait — start with our AI planner and get a complete itinerary in minutes.</p>
                 <button
                   onClick={() => navigate('/ai-planning')}
                   className="relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-50 hover:-translate-y-0.5 transition-all duration-300"
@@ -186,8 +108,8 @@ const ServiceContactPage = () => {
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-8">
+            {/* Contact form */}
+            <div className="bg-white border border-slate-200/70 rounded-2xl shadow-[0_1px_3px_rgba(15,23,42,0.04)] p-8">
               <h3 className="font-display text-xl font-bold text-slate-900 mb-6">Send us a message</h3>
 
               {submitted ? (
@@ -197,11 +119,11 @@ const ServiceContactPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h4 className="text-lg font-bold text-slate-900 mb-1">Message received!</h4>
-                  <p className="text-slate-500 text-sm">Our team will get back to you within 24 hours.</p>
+                  <h4 className="font-display text-lg font-bold text-slate-900 mb-1">Message received!</h4>
+                  <p className="text-slate-500 text-sm">We'll get back to you within 24 hours.</p>
                 </div>
               ) : (
-                <form onSubmit={handleContactSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1.5">First name</label>
@@ -217,7 +139,7 @@ const ServiceContactPage = () => {
                       <input
                         type="text"
                         required
-                        placeholder="Khan"
+                        placeholder="Kahloon"
                         className="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all placeholder-slate-300"
                       />
                     </div>
@@ -268,4 +190,4 @@ const ServiceContactPage = () => {
   );
 };
 
-export default ServiceContactPage;
+export default ContactUs;

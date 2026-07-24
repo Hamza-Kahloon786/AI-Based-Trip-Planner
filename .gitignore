@@ -4,12 +4,7 @@ node_modules/
 .pnp.js
 
 # ── Environment variables (NEVER commit secrets) ───────────────────────────────
-.env
-.env.local
 .env.*.local
-.env.development
-.env.production
-.env.test
 
 # ── Build output ───────────────────────────────────────────────────────────────
 dist/
@@ -76,3 +71,4 @@ coverage/
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+config.bat

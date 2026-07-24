@@ -83,9 +83,10 @@ function Login() {
 
       {/* ── Left: Branding Panel ── */}
       <div className="hidden lg:flex lg:w-5/12 xl:w-[45%] bg-indigo-600 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#4f46e5_0%,#3730a3_50%,#1e1b4b_100%)]" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-400 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-800 rounded-full blur-3xl opacity-30 translate-y-1/2 -translate-x-1/3" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#4f46e5_0%,#6d28d9_48%,#1e1b4b_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_60%,transparent_100%)]" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-400 rounded-full blur-3xl opacity-25 -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-900 rounded-full blur-3xl opacity-40 translate-y-1/2 -translate-x-1/3" />
 
         {/* Logo */}
         <div className="relative z-10">
@@ -98,8 +99,9 @@ function Login() {
             <span className="font-extrabold text-xl text-white tracking-tight">TripAI</span>
           </button>
 
-          <h2 className="text-4xl font-extrabold text-white leading-tight mb-3">
-            Welcome back,<br />explorer.
+          <h2 className="font-display text-4xl font-extrabold text-white leading-tight mb-3">
+            Welcome back,<br />
+            <span className="bg-gradient-to-r from-indigo-200 to-emerald-200 bg-clip-text text-transparent">explorer.</span>
           </h2>
           <p className="text-indigo-200 text-base leading-relaxed mb-10">
             Sign in to access your AI-planned trips and continue your journey.
@@ -142,16 +144,16 @@ function Login() {
 
           {/* Mobile logo */}
           <button onClick={() => navigate('/')} className="flex items-center gap-2 mb-10 lg:hidden">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/25">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             </div>
-            <span className="font-extrabold text-lg text-slate-900">Trip<span className="text-indigo-600">AI</span></span>
+            <span className="font-display font-extrabold text-lg text-slate-900">Trip<span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">AI</span></span>
           </button>
 
           <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Sign in</h1>
+            <h1 className="font-display text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Sign in</h1>
             <p className="text-slate-500 text-sm">Enter your credentials to access your account.</p>
           </div>
 
@@ -258,7 +260,7 @@ function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold text-sm rounded-xl transition-colors shadow-lg shadow-indigo-200 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-60 text-white font-semibold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

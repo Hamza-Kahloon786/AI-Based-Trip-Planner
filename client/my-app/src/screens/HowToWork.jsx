@@ -26,13 +26,14 @@ const HowItWorksSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full mb-4 shadow-sm">
-            <span className="text-slate-600 text-sm font-medium">Simple Process</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-slate-200 rounded-full mb-4 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-emerald-500" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-emerald-700 text-sm font-semibold">Simple Process</span>
           </div>
-          <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          <h2 className="font-display text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
             From idea to itinerary in minutes
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Four straightforward steps to get your AI-generated trip plan with live data.
           </p>
         </div>
@@ -42,14 +43,14 @@ const HowItWorksSection = () => {
           <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-indigo-200 via-emerald-200 to-indigo-200 z-0" />
 
           {howToWork.map((step, index) => (
-            <div key={index} className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-2xl bg-white border-2 border-indigo-100 shadow-md flex items-center justify-center mb-5 text-indigo-600">
+            <div key={index} className="group relative z-10 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/30 flex items-center justify-center mb-5 text-white ring-4 ring-slate-50 group-hover:scale-105 transition-transform duration-300">
                 {stepIcons[index % stepIcons.length]}
               </div>
-              <div className="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center mb-4 -mt-2 shadow">
+              <div className="w-7 h-7 rounded-full bg-white border border-indigo-200 text-indigo-700 text-xs font-bold flex items-center justify-center mb-4 -mt-2 shadow-sm">
                 {index + 1}
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">{step.title}</h3>
+              <h3 className="text-base font-bold text-slate-900 mb-2 font-display">{step.title}</h3>
               <p className="text-sm text-slate-500 leading-relaxed max-w-[180px]">{step.description}</p>
             </div>
           ))}
@@ -59,7 +60,7 @@ const HowItWorksSection = () => {
         <div className="mt-16 text-center">
           <a
             href="/ai-planning"
-            className="inline-flex items-center gap-2 px-7 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-200"
+            className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5"
           >
             Get started now
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

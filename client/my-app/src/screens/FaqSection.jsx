@@ -12,7 +12,7 @@ const FAQSection = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-full mb-4 shadow-sm">
             <span className="text-slate-600 text-sm font-medium">FAQ</span>
           </div>
-          <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          <h2 className="font-display text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
             Frequently asked questions
           </h2>
           <p className="text-lg text-slate-600">
@@ -53,11 +53,11 @@ const FAQSection = () => {
         </div>
 
         <div className="mt-12 text-center bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
-          <h3 className="text-lg font-bold text-slate-900 mb-2">Still have questions?</h3>
+          <h3 className="font-display text-lg font-bold text-slate-900 mb-2">Still have questions?</h3>
           <p className="text-slate-600 text-sm mb-5">Can't find the answer you're looking for? Reach out to our team.</p>
           <a
             href="/services#get-in-touch-form"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

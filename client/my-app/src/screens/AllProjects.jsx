@@ -216,7 +216,7 @@ ${planRef.current.innerHTML}
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] px-5 bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-[calc(100vh-64px)] px-5 bg-gradient-to-br from-indigo-50 via-white to-emerald-50">
       <div className="relative py-10">
 
         {/* Sidebar toggle */}
@@ -238,7 +238,7 @@ ${planRef.current.innerHTML}
             <div className="lg:col-span-3">
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/30 shadow-xl overflow-hidden">
                 <div className="px-6 py-5 border-b border-gray-100">
-                  <h2 className="text-xl font-bold text-gray-800">Projects</h2>
+                  <h2 className="font-display text-xl font-bold text-gray-800">Projects</h2>
                   <p className="text-sm text-gray-500 mt-1">Select a project to view details</p>
                 </div>
                 <div className="p-3">
@@ -294,25 +294,25 @@ ${planRef.current.innerHTML}
 
                 {/* ── AI Plan Card ── */}
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/30 shadow-xl overflow-hidden">
-                  <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-green-50 flex items-center justify-between gap-4">
+                  <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-emerald-50 flex items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-lg font-bold text-gray-800">AI Trip Plan</h3>
+                      <h3 className="font-display text-lg font-bold text-gray-800">AI Trip Plan</h3>
                       <p className="text-sm text-gray-500 mt-1">
                         {isGenerating ? 'Generating your plan...' : 'Completed'}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       {isGenerating && (
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-blue-100 shadow-sm">
-                          <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
-                          <span className="text-sm font-medium text-blue-600">Generating</span>
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-indigo-100 shadow-sm">
+                          <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse" />
+                          <span className="text-sm font-medium text-indigo-600">Generating</span>
                         </div>
                       )}
                       {contentToShow && !isGenerating && (
                         <button
                           type="button"
                           onClick={downloadPDF}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold shadow-lg shadow-indigo-500/25 transition-all"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -323,12 +323,12 @@ ${planRef.current.innerHTML}
                     </div>
                   </div>
 
-                  <div className="p-5 min-h-[260px] bg-gradient-to-br from-white to-blue-50/40">
+                  <div className="p-5 min-h-[260px] bg-gradient-to-br from-white to-indigo-50/40">
                     {isGenerating && !contentToShow ? (
                       <div className="flex flex-col items-center justify-center min-h-[340px] text-center gap-6">
                         {/* Spinner */}
                         <div className="relative w-20 h-20">
-                          <div className="absolute inset-0 rounded-full border-4 border-blue-100" />
+                          <div className="absolute inset-0 rounded-full border-4 border-indigo-100" />
                           <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 border-r-emerald-400 animate-spin" />
                           <div className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-50 to-emerald-50 flex items-center justify-center">
                             <svg className="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -360,12 +360,12 @@ ${planRef.current.innerHTML}
                         </div>
                       </div>
                     ) : contentToShow ? (
-                      <div ref={planRef} className="text-[15px] leading-7 text-gray-700 [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:bg-blue-50 [&_th]:border [&_th]:border-blue-200 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_td]:border [&_td]:border-gray-200 [&_td]:px-3 [&_td]:py-2 [&_tr:nth-child(even)]:bg-gray-50 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-blue-700 [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-semibold [&_h3]:text-gray-800 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_hr]:border-gray-200 [&_hr]:my-4">
+                      <div ref={planRef} className="text-[15px] leading-7 text-gray-700 [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_th]:bg-indigo-50 [&_th]:border [&_th]:border-indigo-200 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_td]:border [&_td]:border-gray-200 [&_td]:px-3 [&_td]:py-2 [&_tr:nth-child(even)]:bg-gray-50 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-indigo-700 [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-semibold [&_h3]:text-gray-800 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_hr]:border-gray-200 [&_hr]:my-4">
                         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                           {contentToShow}
                         </ReactMarkdown>
                         {isGenerating && (
-                          <span className="inline-block w-2 h-5 ml-1 bg-blue-500 rounded-sm animate-pulse align-middle" />
+                          <span className="inline-block w-2 h-5 ml-1 bg-indigo-500 rounded-sm animate-pulse align-middle" />
                         )}
                       </div>
                     ) : (

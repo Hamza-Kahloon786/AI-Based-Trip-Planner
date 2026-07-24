@@ -31,3 +31,19 @@ export const recommendHotels = async ({ destination, origin, budget_per_night, t
         return { error: err.message, data: null };
     }
 };
+
+export const getClimateSuitability = async ({ destination, month }) => {
+    try {
+        const res  = await fetch(`${ML_SERVICE_URL}/climate-suitability`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ destination, month }),
+            signal:  AbortSignal.timeout(6000),
+        });
+        const data = await res.json();
+        return { error: null, data };
+    } catch (err) {
+        console.error('ML climate suitability error:', err.message);
+        return { error: err.message, data: null };
+    }
+};

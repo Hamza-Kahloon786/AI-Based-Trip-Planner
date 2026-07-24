@@ -30,12 +30,12 @@ const serviceIcons = [
 ];
 
 const iconStyles = [
-  'bg-indigo-100 text-indigo-600',
-  'bg-emerald-100 text-emerald-600',
-  'bg-orange-100 text-orange-600',
-  'bg-purple-100 text-purple-600',
-  'bg-rose-100 text-rose-600',
-  'bg-cyan-100 text-cyan-600',
+  'bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25',
+  'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25',
+  'bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/25',
+  'bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-lg shadow-fuchsia-500/25',
+  'bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/25',
+  'bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-lg shadow-cyan-500/25',
 ];
 
 const contactDetails = [
@@ -46,7 +46,7 @@ const contactDetails = [
       </svg>
     ),
     label: 'Phone',
-    value: '+92 300 123 4567',
+    value: '+92 309 1453950',
     sub: 'Mon–Fri, 9am–6pm PKT',
   },
   {
@@ -56,7 +56,7 @@ const contactDetails = [
       </svg>
     ),
     label: 'Email',
-    value: 'hello@tripai.pk',
+    value: 'hamzaakahloon903@gmail.com',
     sub: 'Response within 24 hours',
   },
   {
@@ -103,11 +103,12 @@ const ServiceContactPage = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-6">
-            <span className="text-indigo-700 text-sm font-medium">What We Offer</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-700 text-sm font-semibold">What We Offer</span>
           </div>
-          <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
-            Services powered by <span className="text-indigo-600">advanced AI</span>
+          <h1 className="font-display text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
+            Services powered by <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-emerald-500 bg-clip-text text-transparent">advanced AI</span>
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
             From intelligent itinerary generation to destination matching, our platform covers every aspect of trip planning.
@@ -122,12 +123,12 @@ const ServiceContactPage = () => {
             {services.map((service, index) => (
               <div
                 key={index}
-                className="group bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all duration-300 hover:-translate-y-0.5"
+                className="group bg-white border border-slate-200/70 rounded-2xl p-7 shadow-[0_1px_3px_rgba(15,23,42,0.04)] hover:shadow-[0_20px_40px_-16px_rgba(79,70,229,0.25)] hover:border-indigo-200 transition-all duration-300 hover:-translate-y-1"
               >
-                <div className={`w-12 h-12 rounded-xl ${iconStyles[index % iconStyles.length]} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-xl ${iconStyles[index % iconStyles.length]} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300`}>
                   {serviceIcons[index % serviceIcons.length]}
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{service.title}</h3>
+                <h3 className="font-display text-lg font-bold text-slate-900 mb-2">{service.title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{service.description}</p>
                 <ul className="space-y-2">
                   {service.features.map((feat, i) => (
@@ -149,7 +150,7 @@ const ServiceContactPage = () => {
       <section id="get-in-touch-form" className="py-24 bg-slate-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Get in touch</h2>
+            <h2 className="font-display text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Get in touch</h2>
             <p className="text-lg text-slate-600">Have a question or need help planning? We're here for you.</p>
           </div>
 
@@ -169,12 +170,13 @@ const ServiceContactPage = () => {
                 </div>
               ))}
 
-              <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl p-6 text-white">
-                <h3 className="font-bold text-lg mb-2">Ready to plan your trip?</h3>
-                <p className="text-indigo-200 text-sm mb-4">Start with our AI planner and get a complete itinerary in minutes.</p>
+              <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-700 rounded-xl p-6 text-white shadow-lg shadow-indigo-500/25">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
+                <h3 className="relative font-display font-bold text-lg mb-2">Ready to plan your trip?</h3>
+                <p className="relative text-indigo-200 text-sm mb-4">Start with our AI planner and get a complete itinerary in minutes.</p>
                 <button
                   onClick={() => navigate('/ai-planning')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-50 transition-colors"
+                  className="relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-50 hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Launch AI Planner
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,7 +188,7 @@ const ServiceContactPage = () => {
 
             {/* Contact Form */}
             <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-6">Send us a message</h3>
+              <h3 className="font-display text-xl font-bold text-slate-900 mb-6">Send us a message</h3>
 
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -249,7 +251,7 @@ const ServiceContactPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5 flex items-center justify-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

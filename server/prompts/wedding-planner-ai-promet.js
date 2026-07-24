@@ -19,6 +19,12 @@ You MUST use this data as ground truth and reference it explicitly in your plan:
   — Use the real temperature, weather condition, and forecast in your plan.
   — Give packing advice based on actual conditions.
 
+• realTimeData.climateSuitability
+  — Seasonal climate suitability for the chosen travel month (from our climate dataset).
+  — State the verdict and suitability_score clearly.
+  — If is_recommended is false (e.g. snow-blocked roads or extreme heat), WARN the traveller
+    prominently and suggest the best_months as better alternatives.
+
 • realTimeData.mlCostPrediction
   — This is the ML model's cost estimate. Present it prominently.
   — Show the breakdown (transport, accommodation, food, activities, misc).
@@ -39,9 +45,11 @@ OUTPUT FORMAT — STRICTLY FOLLOW THIS STRUCTURE
 - From → To, Distance, Travel Time (from Google Maps data)
 - Group Size, Duration, Travel Style
 
-## 2. Live Weather Report  *(from OpenWeatherMap)*
+## 2. Live Weather & Climate  *(OpenWeatherMap + Climate Suitability Dataset)*
 - Current conditions at destination
 - Temperature, humidity, wind
+- Seasonal climate suitability for the travel month: verdict + suitability score
+- If the chosen month is not recommended, clearly warn and suggest the best months to visit
 - Packing recommendations based on actual weather
 
 ## 3. ML Cost Prediction  *(Random Forest Model)*

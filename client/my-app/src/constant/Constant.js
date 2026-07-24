@@ -4,7 +4,7 @@ export const NAV_LINKS = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Services", href: "/services" },
-  // { name: "Contact Us", href: "/Contact us" },
+  { name: "Contact Us", href: "/contact" },
   { name: "AI Trip Planning", href: "/ai-planning" },
   { name: "Projects", href: "/projects" },
 
@@ -19,7 +19,7 @@ export const heroSectionData = [
 
 export const teamMembers = [
   {
-    name: 'Hassaan',
+    name: 'Hamza Kahloon',
     role: 'AI Lead & Co-Founder',
     image: '👨‍💼',
     bio: 'Former Google AI researcher passionate about revolutionizing trip planning.',
@@ -147,7 +147,7 @@ export const footerLinks = {
   ],
   services: [
     { name: 'Our Services', path: '/services' },
-    { name: 'Get In Touch', path: '/services#get-in-touch-form' },
+    { name: 'Get In Touch', path: '/contact' },
     { name: 'Create Testimonials', path: '/create-testimonials' },
     // { name: 'Budget Tools', path: '/services#budget' },
     // { name: 'Timeline Manager', path: '/services#timeline' }

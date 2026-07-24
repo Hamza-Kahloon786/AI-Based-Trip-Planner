@@ -16,6 +16,7 @@ import CreateTestimonial from "./screens/CreateTestimonial";
 import AllProjects from "./screens/AllProjects";
 import PrivacyPolicy from "./screens/PrivacyPolicy";
 import TermsOfService from "./screens/TermsOfService";
+import ContactUs from "./screens/ContactUs";
 
 function ProtectedRoute({ children }) {
   const location = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/create-testimonials" element={<CreateTestimonial />} />

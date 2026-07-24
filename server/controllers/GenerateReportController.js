@@ -4,7 +4,7 @@ import client                    from "../queues/client.js";
 import WeddingResult             from "../models/WeddingResult.js";
 import { getRouteDetails, validateLocation } from "../services/googleMapsService.js";
 import { getWeatherForecast }    from "../services/weatherService.js";
-import { predictTripCost, recommendHotels } from "../services/mlService.js";
+import { predictTripCost, recommendHotels, getClimateSuitability } from "../services/mlService.js";
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ export const generateReportController = async (req, res) => {
             startingCity, destination,
             numberOfPeople, tripDuration,
             travelStyle, transportPreference,
-            hotelType, budgetRange,
+            hotelType, budgetRange, travelMonth,
         } = req.body;
 
         const origin   = startingCity  || 'Lahore';
@@ -67,7 +67,7 @@ export const generateReportController = async (req, res) => {
         }
 
         // ── 2. Fetch real-time data in parallel ─────────────────────────────
-        const [routeResult, weatherResult, hotelResult] = await Promise.allSettled([
+        const [routeResult, weatherResult, hotelResult, climateResult] = await Promise.allSettled([
             getRouteDetails(origin, dest),
             getWeatherForecast(dest),
             recommendHotels({
@@ -77,11 +77,13 @@ export const generateReportController = async (req, res) => {
                 travel_style:     style,
                 group_size:       people,
             }),
+            getClimateSuitability({ destination: dest, month: travelMonth }),
         ]);
 
         const routeData  = routeResult.status   === 'fulfilled' ? routeResult.value?.data   : null;
         const weatherData= weatherResult.status === 'fulfilled' ? weatherResult.value?.data : null;
         const hotelData  = hotelResult.status   === 'fulfilled' ? hotelResult.value?.data   : null;
+        const climateData= climateResult.status === 'fulfilled' ? climateResult.value?.data : null;
 
         // ── 2. ML cost prediction (uses real distance if available) ─────────
         const distanceKm = routeData?.distance_km || 500;
@@ -143,6 +145,20 @@ export const generateReportController = async (req, res) => {
                         nearby:           h.nearby,
                     }))
                     : null,
+
+                climateSuitability: climateData && climateData.matched
+                    ? {
+                        month:             climateData.month,
+                        avg_high_c:        climateData.avg_high_c,
+                        avg_low_c:         climateData.avg_low_c,
+                        condition:         climateData.condition,
+                        suitability_score: climateData.suitability_score,
+                        verdict:           climateData.verdict,
+                        recommendation:    climateData.recommendation,
+                        is_recommended:    climateData.is_recommended,
+                        best_months:       climateData.best_months,
+                    }
+                    : null,
             },
         };
 
@@ -153,6 +169,24 @@ export const generateReportController = async (req, res) => {
         return res.status(200).json({ message: "Report generated successfully", aiText: aiText.id });
     } catch (err) {
         console.error('generateReportController error:', err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// ── climate suitability (live check for the planning form) ────────────────────
+
+export const climateCheckController = async (req, res) => {
+    try {
+        const { destination, month } = req.body;
+        if (!destination) return res.status(400).json({ message: "destination is required" });
+
+        const result = await getClimateSuitability({ destination, month });
+        if (result.error || !result.data) {
+            return res.status(200).json({ ok: false, data: null });
+        }
+        return res.status(200).json({ ok: true, data: result.data });
+    } catch (err) {
+        console.error('climateCheckController error:', err);
         return res.status(500).json({ message: "Internal server error" });
     }
 };

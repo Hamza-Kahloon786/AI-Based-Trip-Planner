@@ -1,9 +1,10 @@
 import express from "express"
-import { generateReportController, generateReportStreamController, getProjectsController, getProjectController, deleteProjectController } from "../controllers/GenerateReportController.js"
+import { generateReportController, generateReportStreamController, getProjectsController, getProjectController, deleteProjectController, climateCheckController } from "../controllers/GenerateReportController.js"
 
 
 const router = express.Router()
 router.post('/generate-report', generateReportController)
+router.post('/climate-suitability', climateCheckController)
 router.get('/stream/:jobId', generateReportStreamController)
 router.get('/projects/:userId', getProjectsController)
 router.get('/projects/:userId/:projectId', getProjectController)

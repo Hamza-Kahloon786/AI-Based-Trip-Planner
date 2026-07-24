@@ -197,7 +197,151 @@ def create_hotel_dataset():
     return dataset
 
 
+def create_climate_dataset():
+    """
+    Build a seasonal climate-suitability dataset for Pakistani destinations.
+
+    Unlike the live 5-day forecast (OpenWeatherMap), this answers "is <month> a
+    good time to visit <destination>?" using typical monthly climate by region.
+    Each destination gets a 0-100 suitability score per month plus a verdict and
+    a human-readable note, derived from temperature comfort, rainfall/monsoon,
+    and seasonal road accessibility (snow-closed passes, etc.).
+    """
+    print("\n" + "=" * 50)
+    print("Creating Climate Suitability Dataset...")
+    print("=" * 50)
+
+    MONTHS = ['january', 'february', 'march', 'april', 'may', 'june',
+              'july', 'august', 'september', 'october', 'november', 'december']
+
+    # ── Regional climate zones ──────────────────────────────────────────────
+    # high/low: avg daytime high / night low (°C) per month (Jan..Dec)
+    # rain: 0 dry, 1 light, 2 moderate, 3 heavy/monsoon
+    # access: 0..1 road/pass accessibility (1 = fully open, low = snow-blocked)
+    ZONES = {
+        'northern_alpine': {   # Hunza, Skardu, Gilgit, Naran, Fairy Meadows
+            'high':   [-1, 3, 11, 18, 23, 28, 30, 29, 25, 18, 10, 3],
+            'low':    [-10, -7, -1, 5, 9, 13, 16, 15, 10, 3, -3, -8],
+            'rain':   [1, 1, 2, 2, 1, 0, 1, 1, 0, 0, 0, 1],
+            'access': [0.2, 0.2, 0.4, 0.7, 0.9, 1, 1, 1, 1, 0.8, 0.5, 0.3],
+        },
+        'northern_valley': {   # Swat, Murree, Neelum, Abbottabad, Chitral, Muzaffarabad
+            'high':   [8, 10, 15, 21, 26, 30, 30, 29, 27, 22, 16, 10],
+            'low':    [-1, 1, 5, 10, 14, 18, 19, 18, 14, 8, 3, 0],
+            'rain':   [2, 2, 2, 2, 2, 1, 3, 3, 1, 1, 1, 2],
+            'access': [0.6, 0.6, 0.8, 1, 1, 1, 0.8, 0.8, 1, 1, 0.9, 0.7],
+        },
+        'punjab_plains': {     # Lahore, Faisalabad, Multan, Islamabad, Rawalpindi, etc.
+            'high':   [18, 21, 27, 34, 39, 41, 37, 36, 35, 32, 26, 20],
+            'low':    [6, 9, 14, 20, 25, 28, 27, 26, 24, 18, 11, 7],
+            'rain':   [1, 1, 1, 1, 1, 2, 3, 3, 2, 0, 0, 1],
+            'access': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        },
+        'sindh_coastal': {     # Karachi, Gwadar, Hyderabad, Sukkur
+            'high':   [26, 28, 32, 35, 37, 36, 33, 32, 33, 35, 32, 28],
+            'low':    [13, 16, 21, 25, 28, 29, 28, 27, 26, 22, 18, 14],
+            'rain':   [0, 0, 0, 0, 0, 1, 2, 2, 1, 0, 0, 0],
+            'access': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        },
+        'balochistan_highland': {  # Quetta
+            'high':   [10, 12, 17, 22, 28, 32, 35, 34, 30, 24, 17, 12],
+            'low':    [-3, -1, 4, 9, 13, 17, 20, 18, 12, 6, 0, -3],
+            'rain':   [2, 2, 2, 1, 1, 0, 1, 0, 0, 0, 1, 1],
+            'access': [0.6, 0.6, 0.8, 1, 1, 1, 1, 1, 1, 1, 0.9, 0.7],
+        },
+    }
+
+    DEST_ZONE = {
+        # northern alpine
+        'hunza': 'northern_alpine', 'skardu': 'northern_alpine', 'gilgit': 'northern_alpine',
+        'naran': 'northern_alpine', 'fairy meadows': 'northern_alpine',
+        # northern valley / lower hills
+        'swat': 'northern_valley', 'murree': 'northern_valley', 'neelum valley': 'northern_valley',
+        'abbottabad': 'northern_valley', 'chitral': 'northern_valley', 'muzaffarabad': 'northern_valley',
+        # punjab plains
+        'islamabad': 'punjab_plains', 'rawalpindi': 'punjab_plains', 'lahore': 'punjab_plains',
+        'faisalabad': 'punjab_plains', 'multan': 'punjab_plains', 'gujranwala': 'punjab_plains',
+        'sialkot': 'punjab_plains', 'bahawalpur': 'punjab_plains',
+        # sindh / coastal
+        'karachi': 'sindh_coastal', 'gwadar': 'sindh_coastal', 'hyderabad': 'sindh_coastal',
+        'sukkur': 'sindh_coastal',
+        # balochistan highland
+        'quetta': 'balochistan_highland',
+    }
+
+    def temp_score(high):
+        if 18 <= high <= 28:   return 100
+        if 28 < high <= 32:    return 100 - (high - 28) * 6
+        if 32 < high <= 38:    return 76 - (high - 32) * 6
+        if high > 38:          return max(5, 40 - (high - 38) * 4)
+        if 12 <= high < 18:    return 100 - (18 - high) * 4
+        if 5 <= high < 12:     return 76 - (12 - high) * 5
+        return max(5, 40 - (5 - high) * 4)   # freezing
+
+    RAIN_PENALTY = {0: 0, 1: 5, 2: 15, 3: 30}
+    RAIN_LABEL   = {0: 'dry', 1: 'occasional showers', 2: 'wet season', 3: 'peak monsoon'}
+
+    def temp_label(high):
+        if high >= 38: return 'scorching heat'
+        if high >= 32: return 'very hot'
+        if high >= 28: return 'hot'
+        if high >= 22: return 'warm & pleasant'
+        if high >= 15: return 'mild & pleasant'
+        if high >= 8:  return 'cool'
+        return 'freezing cold'
+
+    def verdict_for(score, access):
+        if access < 0.5:      return 'Not recommended'
+        if score >= 75:       return 'Excellent'
+        if score >= 60:       return 'Good'
+        if score >= 45:       return 'Fair'
+        if score >= 30:       return 'Poor'
+        return 'Not recommended'
+
+    destinations = {}
+    for dest, zone_name in DEST_ZONE.items():
+        z = ZONES[zone_name]
+        months = {}
+        scored = []
+        for i, m in enumerate(MONTHS):
+            high, low, rain, access = z['high'][i], z['low'][i], z['rain'][i], z['access'][i]
+            base = max(0, min(100, temp_score(high) - RAIN_PENALTY[rain]))
+            score = round(base * access)
+            verdict = verdict_for(score, access)
+
+            note = f"Typically {temp_label(high)} (~{high}°C), {RAIN_LABEL[rain]}."
+            if access < 0.5:
+                note += " Mountain roads/passes may be snow-blocked."
+            elif rain == 3:
+                note += " Flooding & landslide risk on northern routes."
+
+            months[m] = {
+                'avg_high_c':        high,
+                'avg_low_c':         low,
+                'rain_level':        rain,
+                'accessible':        access >= 0.5,
+                'condition':         f"{temp_label(high).title()}, {RAIN_LABEL[rain]}",
+                'suitability_score': score,
+                'verdict':           verdict,
+                'note':              note,
+            }
+            scored.append((m, score))
+
+        best = [m.title() for m, _ in sorted(scored, key=lambda x: -x[1])[:3]]
+        destinations[dest] = {'zone': zone_name, 'best_months': best, 'months': months}
+
+    dataset = {'destinations': destinations, 'total': len(destinations)}
+    path = os.path.join(MODEL_DIR, 'climate_dataset.json')
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(dataset, f, indent=2, ensure_ascii=False)
+
+    print(f"Climate dataset saved -> {path}")
+    print(f"Destinations: {len(destinations)} | Months each: 12")
+    return dataset
+
+
 if __name__ == '__main__':
     train_cost_model()
     create_hotel_dataset()
+    create_climate_dataset()
     print("\nAll models trained and saved successfully!")

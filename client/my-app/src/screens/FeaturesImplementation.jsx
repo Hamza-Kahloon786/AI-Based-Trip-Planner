@@ -29,12 +29,12 @@ const featureIcons = [
 ];
 
 const iconBgs = [
-  "bg-indigo-100 text-indigo-600",
-  "bg-emerald-100 text-emerald-600",
-  "bg-orange-100 text-orange-600",
-  "bg-purple-100 text-purple-600",
-  "bg-rose-100 text-rose-600",
-  "bg-cyan-100 text-cyan-600",
+  "bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25",
+  "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25",
+  "bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/25",
+  "bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-lg shadow-fuchsia-500/25",
+  "bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/25",
+  "bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-lg shadow-cyan-500/25",
 ];
 
 const FeaturesSection = () => {
@@ -43,13 +43,14 @@ const FeaturesSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-4">
-            <span className="text-indigo-700 text-sm font-medium">Platform Features</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-700 text-sm font-semibold">Platform Features</span>
           </div>
-          <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          <h2 className="font-display text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
             Everything you need to plan smarter
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Powered by advanced AI, real-time APIs, and ML models trained on thousands of Pakistani travel routes.
           </p>
         </div>
@@ -58,13 +59,13 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all duration-300 hover:-translate-y-0.5"
+              className="group relative bg-white rounded-2xl p-7 border border-slate-200/70 shadow-[0_1px_3px_rgba(15,23,42,0.04)] hover:shadow-[0_20px_40px_-16px_rgba(79,70,229,0.25)] hover:border-indigo-200 transition-all duration-300 hover:-translate-y-1"
             >
-              <div className={`w-12 h-12 rounded-xl ${iconBgs[index % iconBgs.length]} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-12 h-12 rounded-xl ${iconBgs[index % iconBgs.length]} flex items-center justify-center mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300`}>
                 {featureIcons[index % featureIcons.length]}
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">{feature.title}</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">{feature.description}</p>
+              <h3 className="text-lg font-bold text-slate-900 mb-2 font-display">{feature.title}</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>

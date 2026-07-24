@@ -58,7 +58,7 @@ const TestimonialsSection = () => {
             </svg>
             <span className="text-amber-700 text-sm font-medium">Traveler Reviews</span>
           </div>
-          <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+          <h2 className="font-display text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
             Loved by thousands of travelers
           </h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
